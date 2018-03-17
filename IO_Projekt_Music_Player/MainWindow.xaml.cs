@@ -1,28 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace IO_Projekt_Music_Player
 {
-    /// <summary>
-    /// Logika interakcji dla klasy MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
+            
+            //Create Objects
+            AudioPlayer audioPlayer = new AudioPlayer();
+            Sequence sequence = new Sequence();
+            Timer timer = new Timer(audioPlayer, sequence);
+            PlayListManager playListManager = new PlayListManager(audioPlayer, timer);
+            PieceManager pieceManager = new PieceManager(FilesInPlayList, audioPlayer, playListManager, timer);
+
+            
+
+            //assigment datacontext properties to appropriate objects
+            Load.DataContext = playListManager;
+            FilesInPlayList.DataContext = playListManager;
+            Remove.DataContext = playListManager;
+            Clear.DataContext = playListManager;
+            Window.DataContext = playListManager;
+
+            Play.DataContext = pieceManager;
+            Pause.DataContext = pieceManager;
+            Stop.DataContext = pieceManager;
+            Next.DataContext = pieceManager;
+            
+
+            Loop.DataContext = sequence;
+            Rand.DataContext = sequence;
+
+            ProgressSlider.DataContext = audioPlayer;
+            VolumeSlider.DataContext = audioPlayer;
+            tytul.DataContext = audioPlayer;
         }
     }
 }

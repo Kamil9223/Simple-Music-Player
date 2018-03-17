@@ -4,9 +4,106 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IO_Projekt_Music_Player"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MusicPlayer" Height="550" Width="550" ResizeMode="CanMinimize" x:Name="Window">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding CloseCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
     <Grid>
-        
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Height" Value="30" />
+                <Setter Property="FontSize" Value="17" />
+                <Setter Property="BorderThickness" Value="0.2" />
+                <Setter Property="BorderBrush" Value="Black" />
+                <Setter Property="Foreground" Value="#FFC96925" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Height" Value="25" />
+                <Setter Property="Width" Value="65" />
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Background" Value="Bisque" />
+                <Setter Property="Focusable" Value="False" />
+            </Style>
+            <Style TargetType="Slider">
+                <Setter Property="Focusable" Value="False" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="PanelTop" Grid.Row="0" Background="DimGray">
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label x:Name="tytul" Grid.Row="0" HorizontalContentAlignment="Center" Background="Bisque" BorderBrush="Black" BorderThickness="3" Width="500" Height="36" Content="{Binding title}" />
+
+            <Slider Grid.Row="1" x:Name="ProgressSlider" Value="{Binding elapsedTime, Mode=TwoWay}" Maximum="{Binding maximum}" Width="300" Height="25">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseDown">
+                        <i:InvokeCommandAction Command="{Binding TrackControlMouseDownCommand}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="PreviewMouseUp">
+                        <i:InvokeCommandAction Command="{Binding TrackControlMouseUpCommand}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Slider>
+            <Button x:Name="Next" Grid.Row="1" Content=">>" Width="Auto" Margin="454,21,22,21" Command="{Binding NextSongCommand}" RenderTransformOrigin="2.7,0.6" />
+            <Button x:Name="Play" Grid.Row="2" Content="Play" Margin="0,13,444,-20" Command="{Binding PlayCommand}" RenderTransformOrigin="0.185,1.24" />
+            <Button x:Name="Pause" Grid.Row="2" Content="Pause" Margin="70,13,374,-20" Command="{Binding PauseCommand}" />
+            <Button x:Name="Stop" Grid.Row="2" Content="Stop" Margin="140,13,304,-20" Command="{Binding StopCommand}"/>
+            <Button x:Name="Loop" Grid.Row="2" Content="Loop" Margin="210,13,234,-20" Foreground="{Binding colourLoop}" Command="{Binding LoopCommand}" RenderTransformOrigin="0.492,0.6"  />
+            <Button x:Name="Rand" Grid.Row="2" Content="Rand" Margin="280,13,164,-20" Foreground="{Binding colourRand}" Command="{Binding RandomCommand}"/>
+            <Slider x:Name="VolumeSlider" Grid.Row="2" Height="24" Width="100" Margin="381,13,36,26" 
+                    Maximum="1" Minimum="0" Value="{Binding currentVolume, Mode=TwoWay}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="ValueChanged">
+                        <i:InvokeCommandAction Command="{Binding VolumeControlValueChangedCommand}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Slider>
+            <Label  Grid.Row="2" Width="75" BorderThickness="0" Margin="392,27,50,10">Volume</Label>
+
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" BorderThickness="0" Background="black">
+            <StackPanel x:Name="PanelPlayList" Background="Black" >
+                <ListBox x:Name="FilesInPlayList" ItemsSource="{Binding listOfLoadedFiles}" HorizontalContentAlignment="Stretch" Background="Black" BorderThickness="0" Foreground="Wheat">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:Name="tttt">
+                            <TextBlock Text="{Binding}">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.DoubleClickCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}} }" />
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </ScrollViewer>
+
+
+        <WrapPanel  Grid.Row="2" Background="DimGray">
+            <Button x:Name="Remove" Content="Remove" Width="85" Command="{Binding RemoveFileCommand}" />
+            <Button x:Name="Clear" Content="Clear" Command="{Binding ClearAllCommand}" />
+            <Button x:Name="Load" Content="Load" Command="{Binding LoadFilesCommand, Mode=TwoWay}" />
+        </WrapPanel>
+
+
     </Grid>
 </Window>
